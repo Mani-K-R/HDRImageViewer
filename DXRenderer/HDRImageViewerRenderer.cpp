@@ -314,9 +314,11 @@ void HDRImageViewerRenderer::CreateImageDependentResources()
     // The destination color space is the render target's (swap chain's) color space. This app uses an
     // FP16 swap chain, which requires the colorspace to be scRGB.
     ComPtr<ID2D1ColorContext1> destColorContext;
+    bool useScRgb = m_deviceResources->GetD2DTargetBitmap()->GetPixelFormat().format == DXGI_FORMAT_R16G16B16A16_FLOAT;
+
     IFT(context->CreateColorContextFromDxgiColorSpace(
-            DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709, // scRGB
-            &destColorContext));
+        useScRgb ? DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709 : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709, // scRGB or sRGB
+        &destColorContext));
 
     IFT(m_colorManagementEffect->SetValue(
             D2D1_COLORMANAGEMENT_PROP_DESTINATION_COLOR_CONTEXT,
@@ -902,7 +904,7 @@ void HDRImageViewerRenderer::Draw()
 
     if (m_loadedImage)
     {
-        d2dContext->DrawImage(m_finalOutput.Get(), m_imageOffset);
+        d2dContext->DrawImage(m_loadedImage.Get(), m_imageOffset);
 
         EmitHdrMetadata();
     }

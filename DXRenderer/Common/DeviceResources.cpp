@@ -27,7 +27,7 @@ using namespace Platform;
 // 16 bits-per-channel, floating-point format. This format should be used for swap chains
 // and intermediate surfaces that will be representing content in the scRGB color space.
 // Direct3D and Direct2D natively support rendering to this pixel format.
-static const bool sc_dxAdvancedColorSupport = true;
+static const bool sc_dxAdvancedColorSupport = false;
 
 // Constants used to calculate screen rotations
 namespace ScreenRotation
@@ -344,15 +344,17 @@ void DXRenderer::DeviceResources::CreateWindowSizeDependentResources()
 
         if ((colorSpaceSupport & DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG_PRESENT) == DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG_PRESENT)
         {
-            // Set the swap chain's color space to scRGB.
             ThrowIfFailed(
                 m_swapChain->SetColorSpace1(DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709)
                 );
         }
         else
         {
-            // This sample app does not handle the unsupported case.
-            throw ref new NotImplementedException();
+            // sRGB should only be used when SDR support is forced.
+            ThrowIfFailed(sc_dxAdvancedColorSupport == false ? S_OK : E_INVALIDARG);
+            ThrowIfFailed(
+                m_swapChain->SetColorSpace1(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709)
+                );
         }
 
         // Associate the swap chain with SwapChainPanel.

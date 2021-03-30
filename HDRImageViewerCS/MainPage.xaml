@@ -73,8 +73,8 @@
         <!-- <Rectangle Grid.Row="0" Grid.RowSpan="3" Grid.Column="0" Fill="{StaticResource SystemControlAcrylicElementBrush}" /> -->
         <StackPanel x:Name="ControlsPanel" Grid.Row="1" Grid.Column="0" MinWidth="200"> <!-- Avoid changing layout from render effect change -->
             <Button x:Name="OpenButton" Click="OpenImageButton_Click">Open image</Button>
-            <Button x:Name="ExportImageButton" Click="ExportImageButton_Click" IsEnabled="False">Export image to SDR</Button>
-            <StackPanel x:Name="RenderEffectPanel">
+            <Button x:Name="ExportImageButton" Click="ExportImageButton_Click" IsEnabled="False" Visibility="Collapsed">Export image to SDR</Button>
+            <StackPanel x:Name="RenderEffectPanel" Visibility="Collapsed">
                 <TextBlock>Render Effect:</TextBlock>
                 <ComboBox x:Name="RenderEffectCombo" ItemsSource="{x:Bind ViewModel.RenderEffects}" SelectionChanged="RenderEffectCombo_Changed" IsEnabled="False">
                     <ComboBox.ItemTemplate>
@@ -84,7 +84,7 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
             </StackPanel>
-            <StackPanel x:Name="BrightnessAdjustPanel">
+            <StackPanel x:Name="BrightnessAdjustPanel" Visibility="Collapsed">
                 <TextBlock>Adjust brightness:</TextBlock>
                 <Slider
                     x:Name="BrightnessAdjustSlider"
